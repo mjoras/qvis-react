@@ -1,0 +1,122 @@
+/*
+ * Multiplexing graph styles (parity/multiplexing-graph.md §2.2, §8.5).
+ *
+ * 1. qvis MultiplexingGraphConfigurator.vue scoped CSS: `.row { padding-bottom: 10px }` and `.btn { margin: 0 5px }`,
+ *    which only reached the elements of that template (not the rows inside ConnectionConfigurator), hence the child
+ *    combinators.
+ * 2. Bootstrap 5 `.row > *` gives every direct child of a row width: 100%, gutter padding and flex-shrink: 0
+ *    (Bootstrap 4 only styled .col*): restore Bootstrap 4 behaviour for the <p>, the checkboxes and the button.
+ * 3. bootstrap-vue's <b-form-checkbox> markup (`custom-control custom-checkbox`) with the Bootstrap 4.3.1 styles, which
+ *    Bootstrap 5 no longer ships (1rem box, #adb5bd border, checked #007bff).
+ * The Bootstrap 4.3.1 button focus look ("Load all connections at once") is app-wide in src/styles/global.css.
+ */
+
+/* ---------------------------------------------------------------- 1. scoped qvis rules */
+
+.mux-configurator > .container-fluid > .row {
+    padding-bottom: 10px;
+}
+
+.mux-configurator > .container-fluid > .row > .btn {
+    margin: 0px 5px;
+}
+
+/* ---------------------------------------------------------------- 2. Bootstrap 5 row child reset */
+
+.mux-configurator > .container-fluid > .row > :not([class*="col"]) {
+    flex-shrink: 1;
+    width: auto;
+    max-width: none;
+    margin-top: 0;
+}
+
+.mux-configurator > .container-fluid > .row > p {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* (.btn keeps its own padding: bootstrap's .btn rule comes after the grid rules) */
+.mux-configurator > .container-fluid > .row > .custom-control {
+    padding-left: 1.5rem;
+    padding-right: 0;
+}
+
+/* ---------------------------------------------------------------- 3. Bootstrap 4.3.1 custom checkbox */
+
+.mux-configurator .custom-control.custom-checkbox {
+    position: relative;
+    display: block;
+    min-height: 1.5rem;
+}
+
+.mux-configurator .custom-control-input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+.mux-configurator .custom-control-label {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: top;
+}
+
+.mux-configurator .custom-control-label::before {
+    position: absolute;
+    top: 0.25rem;
+    left: -1.5rem;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+    content: "";
+    background-color: #fff;
+    border: #adb5bd solid 1px;
+    border-radius: 0.25rem;
+    transition:
+        background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+}
+
+.mux-configurator .custom-control-label::after {
+    position: absolute;
+    top: 0.25rem;
+    left: -1.5rem;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    content: "";
+    background: no-repeat 50% / 50% 50%;
+}
+
+.mux-configurator .custom-control-input:checked ~ .custom-control-label::before {
+    color: #fff;
+    border-color: #007bff;
+    background-color: #007bff;
+}
+
+.mux-configurator .custom-control-input:checked ~ .custom-control-label::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/%3e%3c/svg%3e");
+}
+
+.mux-configurator .custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.mux-configurator .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+    border-color: #80bdff;
+}
+
+.mux-configurator .custom-control-input:not(:disabled):active ~ .custom-control-label::before {
+    color: #fff;
+    background-color: #b3d7ff;
+    border-color: #b3d7ff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mux-configurator .custom-control-label::before {
+        transition: none;
+    }
+}

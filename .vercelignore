@@ -1,0 +1,8 @@
+# Large or local-only files that the Vercel build does not need
+tests/fixtures/legacy
+public/examples/massive/massive_client.sqlog
+tools/qloggen/quic-go
+tools/qloggen/.build
+test-results
+playwright-report
+*.png

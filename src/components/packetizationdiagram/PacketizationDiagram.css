@@ -1,0 +1,77 @@
+/*
+ * Scoped styles of the packetization diagram (qvis PacketizationDiagramConfigurator.vue <style scoped>, plus the
+ * Bootstrap 4 look of the b-modal header close button). parity/packetization-diagram.md §2.2, §2.3.
+ */
+
+/* Vue scoped `.row { padding-bottom: 10px; }`: only the configurator's own three rows */
+.packetization-configurator > .container-fluid > .row {
+    padding-bottom: 10px;
+}
+
+/* Vue scoped `.btn { margin: 0px 5px; }`: "More info on this tool" and the modal's "Close" */
+.packetization-configurator .packetization-info-button,
+.packetization-info-modal .modal-body > .btn {
+    margin: 0px 5px;
+}
+
+/*
+ * Bootstrap 4.3 focus look of "More info on this tool" and the modal's Close (ring on any focus, also after a click and
+ * when the modal hands focus back; normal colours): app-wide `.btn:focus` rules in src/styles/global.css.
+ */
+
+/*
+ * Bootstrap 5 gives every direct child of a .row width:100%, gutter padding and flex-shrink:0 (Bootstrap 4 only
+ * styled .col*). qvis puts the intro <p> directly in a centered row: keep it shrink-to-fit and centered.
+ */
+.packetization-configurator > .container-fluid > .row > p {
+    width: auto;
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+    flex-shrink: 1;
+}
+
+/* a <p> that contains a <ul> (qvis DOM), see PacketizationInfoModal.tsx */
+.packetization-info-modal .packetization-info-paragraph {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+/* Bootstrap 4 left lists at the browser's 40px indent; Bootstrap 5 sets `ul { padding-left: 2rem }` */
+.packetization-info-modal .modal-body ul {
+    padding-left: 40px;
+}
+
+/* Bootstrap 4.3 modal frame: border rgba(0,0,0,.2) (BS5: .175) and .3rem header corners (BS5: calc(.5rem - 1px)) */
+.packetization-info-modal .modal-content {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* bootstrap-vue 2 / Bootstrap 4 modal header close button ("×") */
+.packetization-info-modal .modal-header {
+    align-items: flex-start;
+    border-top-left-radius: 0.3rem;
+    border-top-right-radius: 0.3rem;
+}
+
+.packetization-info-modal .modal-header .close {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.5;
+    padding: 1rem 1rem;
+    margin: -1rem -1rem -1rem auto;
+    background-color: transparent;
+    border: 0;
+    appearance: none;
+}
+
+.packetization-info-modal .modal-header .close:hover,
+.packetization-info-modal .modal-header .close:focus {
+    color: #000;
+    text-decoration: none;
+    opacity: 0.75;
+}

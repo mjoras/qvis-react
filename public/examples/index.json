@@ -1,0 +1,142 @@
+[
+  {
+    "file": "new_cid.qlog",
+    "title": "new_cid: connection ID updates",
+    "description": "A single 20 KB HTTP/3 GET over a 30 ms RTT path without loss. Right after the handshake, both endpoints issue NEW_CONNECTION_ID frames, switch to a connection ID of the peer and retire the previous one (RETIRE_CONNECTION_ID); quic:connection_id_updated events mark every change. Client and server trace of the same connection.",
+    "size": 50333,
+    "id": "new_cid",
+    "traces": 2,
+    "events": 217,
+    "duration_ms": 74,
+    "scenario": "qloggen -n 1 -size 20KB -rtt 30ms",
+    "generator": "tools/qloggen: quic-go v0.64.1 + quic-go-v0.64.1-qlog-latest.patch (qlog main-schema-14, quic-events-13, h3-events-13)",
+    "variants": [
+      {
+        "file": "new_cid_client.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "client",
+        "size": 22880,
+        "events": 97
+      },
+      {
+        "file": "new_cid_server.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "server",
+        "size": 25469,
+        "events": 120
+      }
+    ]
+  },
+  {
+    "file": "10_parallel_streams.qlog",
+    "title": "10 parallel streams: 10 x 50 KB with 5% loss",
+    "description": "Ten parallel HTTP/3 GETs of 50 KB each on one connection, over a 40 ms RTT path with 5% random packet loss in both directions (the equivalent of qvis' parallel_10_50KB demo). Shows stream multiplexing, retransmissions and loss recovery. Client and server trace of the same connection.",
+    "size": 583985,
+    "id": "10_parallel_streams",
+    "traces": 2,
+    "events": 2609,
+    "duration_ms": 975,
+    "scenario": "qloggen -n 10 -size 50KB -loss 0.05 -rtt 40ms",
+    "generator": "tools/qloggen: quic-go v0.64.1 + quic-go-v0.64.1-qlog-latest.patch (qlog main-schema-14, quic-events-13, h3-events-13)",
+    "variants": [
+      {
+        "file": "10_parallel_streams_client.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "client",
+        "size": 253500,
+        "events": 1086
+      },
+      {
+        "file": "10_parallel_streams_server.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "server",
+        "size": 309393,
+        "events": 1523
+      }
+    ]
+  },
+  {
+    "file": "doublevantage_100ms.qlog",
+    "title": "Double vantage point, 100 ms RTT",
+    "description": "The client and the server trace of one connection in a single file: a 1 MB HTTP/3 download over a 100 ms RTT, 20 Mbit/s path with 1% random loss in both directions. Both traces use the system clock with a real epoch, so they can be aligned in time; packets lost on the path appear in only one of the traces.",
+    "size": 1157853,
+    "id": "doublevantage_100ms",
+    "traces": 2,
+    "events": 5171,
+    "duration_ms": 2532,
+    "scenario": "qloggen -n 1 -size 1MB -rtt 100ms -bw 20Mbit -loss 0.01",
+    "generator": "tools/qloggen: quic-go v0.64.1 + quic-go-v0.64.1-qlog-latest.patch (qlog main-schema-14, quic-events-13, h3-events-13)",
+    "variants": [
+      {
+        "file": "doublevantage_100ms_client.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "client",
+        "size": 463325,
+        "events": 1914
+      },
+      {
+        "file": "doublevantage_100ms_server.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "server",
+        "size": 652929,
+        "events": 3257
+      }
+    ]
+  },
+  {
+    "file": "multistream_loss.qlog",
+    "title": "Congestion control: 6 x 300 KB through a 4 Mbit/s bottleneck with 2% loss",
+    "description": "Six parallel 300 KB HTTP/3 responses through a 4 Mbit/s bottleneck (50 ms RTT, drop-tail buffer of one bandwidth-delay product) with 2% random loss in both directions. Slow start overshoots the bottleneck buffer, the queue raises the RTT, and the congestion window then alternates between recovery and congestion avoidance. Client and server trace of the same connection.",
+    "size": 2081701,
+    "id": "multistream_loss",
+    "traces": 2,
+    "events": 9363,
+    "duration_ms": 5941,
+    "scenario": "qloggen -n 6 -size 300KB -loss 0.02 -bw 4Mbit -rtt 50ms",
+    "generator": "tools/qloggen: quic-go v0.64.1 + quic-go-v0.64.1-qlog-latest.patch (qlog main-schema-14, quic-events-13, h3-events-13)",
+    "variants": [
+      {
+        "file": "multistream_loss_client.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "client",
+        "size": 871427,
+        "events": 3744
+      },
+      {
+        "file": "multistream_loss_server.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "server",
+        "size": 1135034,
+        "events": 5619
+      }
+    ]
+  },
+  {
+    "file": "baseline.qlog",
+    "title": "Baseline: one 1 MB download without loss",
+    "description": "A single 1 MB HTTP/3 GET over a 40 ms RTT path without loss or bandwidth limit: handshake, connection ID updates, slow start and a clean connection close. Client and server trace of the same connection.",
+    "size": 963178,
+    "id": "baseline",
+    "traces": 2,
+    "events": 4186,
+    "duration_ms": 275,
+    "scenario": "qloggen -n 1 -size 1MB -rtt 40ms",
+    "generator": "tools/qloggen: quic-go v0.64.1 + quic-go-v0.64.1-qlog-latest.patch (qlog main-schema-14, quic-events-13, h3-events-13)",
+    "variants": [
+      {
+        "file": "baseline_client.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "client",
+        "size": 386050,
+        "events": 1511
+      },
+      {
+        "file": "baseline_server.sqlog",
+        "format": "JSON-SEQ",
+        "vantage_point": "server",
+        "size": 543506,
+        "events": 2675
+      }
+    ]
+  }
+]

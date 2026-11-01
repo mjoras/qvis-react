@@ -1,0 +1,7 @@
+/* qvis VUEDebug.vue has no styles of its own: left-aligned (#app), no top margin. Pinned here because other pages
+   may ship an unscoped `.home` rule (qvis used Vue-scoped CSS, so such rules never reached this page). */
+#VUEDebug.home {
+    width: auto;
+    text-align: left;
+    margin-top: 0;
+}

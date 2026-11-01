@@ -1,0 +1,4 @@
+# patched quic-go checkout (cloned by generate.sh) and build output
+/quic-go
+/.build/
+/qloggen

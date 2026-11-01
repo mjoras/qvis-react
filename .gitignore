@@ -1,0 +1,14 @@
+node_modules
+dist
+.vercel
+coverage
+playwright-report
+test-results
+*.log
+.DS_Store
+.env*
+!.env.example
+
+# Large generated files that are not committed (regenerate with tools/qloggen/generate.sh and scripts/latest-to-legacy.mjs)
+public/examples/massive/massive_client.sqlog
+tests/fixtures/legacy/massive_*.draft02.qlog

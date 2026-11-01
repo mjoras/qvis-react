@@ -1,0 +1,635 @@
+/*
+ * Global styles: qvis App.vue globals + Bootstrap 4.3.1 parity overrides on top of Bootstrap 5.3
+ * (parity/app-shell.md §2.3, §8.7). Loaded after bootstrap.min.css (src/main.tsx).
+ */
+
+/* ---------------------------------------------------------------- App.vue (unscoped) */
+
+html,
+body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+#app {
+    font-family: "Avenir", Helvetica, Arial, sans-serif; /* no webfont: Avenir only on macOS, as in qvis */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: left;
+    color: #2c3e50;
+}
+
+/* ---------------------------------------------------------------- Bootstrap 4 root values */
+
+:root {
+    --bs-primary: #007bff;
+    --bs-primary-rgb: 0, 123, 255;
+    --bs-success: #28a745;
+    --bs-success-rgb: 40, 167, 69;
+    --bs-info: #17a2b8;
+    --bs-info-rgb: 23, 162, 184;
+    --bs-dark: #343a40;
+    --bs-dark-rgb: 52, 58, 64;
+    --bs-link-color: #007bff;
+    --bs-link-color-rgb: 0, 123, 255;
+    --bs-link-hover-color: #0056b3;
+    --bs-link-hover-color-rgb: 0, 86, 179;
+    --bs-code-color: #e83e8c;
+    --bs-border-radius: 0.25rem;
+    --bs-border-radius-sm: 0.2rem;
+    --bs-border-radius-lg: 0.3rem;
+    --bs-focus-ring-color: rgba(0, 123, 255, 0.25);
+    /* Bootstrap 4 has no smooth scrolling (matters for the sequence diagram's scroll-to-event) */
+    scroll-behavior: auto;
+}
+
+/*
+ * Bootstrap 4.3.1 body font stack (Bootstrap 5 uses system-ui first). #app overrides it with Avenir; this matters for
+ * content outside #app, i.e. the modals that react-bootstrap portals into <body>.
+ */
+:root {
+    --bs-body-font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Bootstrap 4 left lists at the browser's 40px indent; the Bootstrap 5 reboot sets `ol, ul { padding-left: 2rem }` */
+ol,
+ul {
+    padding-left: 40px;
+}
+
+/* Bootstrap 4.3.1 modal frame: border rgba(0,0,0,.2) (BS5: .175) and .3rem header/footer corners (BS5: .3rem - 1px) */
+.modal {
+    --bs-modal-border-color: rgba(0, 0, 0, 0.2);
+    --bs-modal-inner-border-radius: 0.3rem;
+}
+
+/* ---------------------------------------------------------------- links */
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:not([href]):not([tabindex]),
+a:not([href]):not([tabindex]):hover,
+a:not([href]):not([tabindex]):focus {
+    color: inherit;
+    text-decoration: none;
+}
+
+.btn:hover,
+.btn:focus,
+.nav-link:hover,
+.nav-link:focus {
+    text-decoration: none;
+}
+
+/* ---------------------------------------------------------------- hover tooltips */
+
+/*
+ * Hover tooltips (src/components/shared/HoverTooltip.tsx: congestion buttons, "Time multiplier:", "Latency offset :"):
+ * BootstrapVue 2.0.4 / Bootstrap 4.3.1 look and geometry. The tooltip is portalled to <body>. Bootstrap 4 reserves
+ * the 0.4rem arrow space as padding of the `.tooltip` box (Bootstrap 5 hangs the arrow outside it), uses its own font
+ * stack and z-index 1070 (BS5: 1080).
+ */
+.tooltip.qvis-tooltip {
+    z-index: 1070;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.tooltip.qvis-tooltip.bs-tooltip-top,
+.tooltip.qvis-tooltip.bs-tooltip-bottom {
+    padding: 0.4rem 0;
+}
+
+.tooltip.qvis-tooltip.bs-tooltip-top .tooltip-arrow {
+    bottom: 0;
+}
+
+.tooltip.qvis-tooltip.bs-tooltip-top .tooltip-arrow::before {
+    top: 0;
+}
+
+.tooltip.qvis-tooltip.bs-tooltip-bottom .tooltip-arrow {
+    top: 0;
+}
+
+.tooltip.qvis-tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    bottom: 0;
+}
+
+/* ---------------------------------------------------------------- typography (no responsive font sizes) */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+h1,
+.h1 {
+    font-size: 2.5rem;
+}
+h2,
+.h2 {
+    font-size: 2rem;
+}
+h3,
+.h3 {
+    font-size: 1.75rem;
+}
+h4,
+.h4 {
+    font-size: 1.5rem;
+}
+h5,
+.h5 {
+    font-size: 1.25rem;
+}
+h6,
+.h6 {
+    font-size: 1rem;
+}
+
+small,
+.small {
+    font-size: 80%;
+    font-weight: 400;
+}
+
+/* ---------------------------------------------------------------- grid gutters (15px per side) */
+
+.container-fluid,
+.container,
+.row {
+    --bs-gutter-x: 30px;
+}
+
+.no-gutters,
+.g-0,
+.gx-0 {
+    --bs-gutter-x: 0;
+}
+
+/* ---------------------------------------------------------------- buttons */
+
+.btn {
+    --bs-btn-focus-box-shadow: 0 0 0 0.2rem rgba(var(--bs-btn-focus-shadow-rgb), 0.5);
+}
+
+/*
+ * Bootstrap 4.3.1 draws the button focus ring on :focus, so it also stays around a button after a mouse click (and
+ * while it is pressed). Bootstrap 5 only rings :focus-visible, and switches to the hover colours there; 4.3.1 kept the
+ * normal colours while focused and not hovered.
+ */
+.btn:focus {
+    outline: 0;
+    box-shadow: var(--bs-btn-focus-box-shadow);
+}
+
+.btn:focus-visible:not(:hover):not(:active) {
+    color: var(--bs-btn-color);
+    background-color: var(--bs-btn-bg);
+    border-color: var(--bs-btn-border-color);
+}
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #007bff;
+    --bs-btn-border-color: #007bff;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #0069d9;
+    --bs-btn-hover-border-color: #0062cc;
+    --bs-btn-focus-shadow-rgb: 38, 143, 255;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #0062cc;
+    --bs-btn-active-border-color: #005cbf;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #007bff;
+    --bs-btn-disabled-border-color: #007bff;
+}
+
+.btn-secondary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #6c757d;
+    --bs-btn-border-color: #6c757d;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #5a6268;
+    --bs-btn-hover-border-color: #545b62;
+    --bs-btn-focus-shadow-rgb: 130, 138, 145;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #545b62;
+    --bs-btn-active-border-color: #4e555b;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #6c757d;
+    --bs-btn-disabled-border-color: #6c757d;
+}
+
+.btn-success {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #28a745;
+    --bs-btn-border-color: #28a745;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #218838;
+    --bs-btn-hover-border-color: #1e7e34;
+    --bs-btn-focus-shadow-rgb: 72, 180, 97;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #1e7e34;
+    --bs-btn-active-border-color: #1c7430;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #28a745;
+    --bs-btn-disabled-border-color: #28a745;
+}
+
+.btn-info {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #17a2b8;
+    --bs-btn-border-color: #17a2b8;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #138496;
+    --bs-btn-hover-border-color: #117a8b;
+    --bs-btn-focus-shadow-rgb: 58, 176, 195;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #117a8b;
+    --bs-btn-active-border-color: #10707f;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #17a2b8;
+    --bs-btn-disabled-border-color: #17a2b8;
+}
+
+.btn-warning {
+    --bs-btn-color: #212529;
+    --bs-btn-bg: #ffc107;
+    --bs-btn-border-color: #ffc107;
+    --bs-btn-hover-color: #212529;
+    --bs-btn-hover-bg: #e0a800;
+    --bs-btn-hover-border-color: #d39e00;
+    --bs-btn-focus-shadow-rgb: 222, 170, 12;
+    --bs-btn-active-color: #212529;
+    --bs-btn-active-bg: #d39e00;
+    --bs-btn-active-border-color: #c69500;
+    --bs-btn-disabled-color: #212529;
+    --bs-btn-disabled-bg: #ffc107;
+    --bs-btn-disabled-border-color: #ffc107;
+}
+
+.btn-danger {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #dc3545;
+    --bs-btn-border-color: #dc3545;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #c82333;
+    --bs-btn-hover-border-color: #bd2130;
+    --bs-btn-focus-shadow-rgb: 225, 83, 97;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #bd2130;
+    --bs-btn-active-border-color: #b21f2d;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #dc3545;
+    --bs-btn-disabled-border-color: #dc3545;
+}
+
+.btn-light {
+    --bs-btn-color: #212529;
+    --bs-btn-bg: #f8f9fa;
+    --bs-btn-border-color: #f8f9fa;
+    --bs-btn-hover-color: #212529;
+    --bs-btn-hover-bg: #e2e6ea;
+    --bs-btn-hover-border-color: #dae0e5;
+    --bs-btn-focus-shadow-rgb: 216, 217, 219;
+    --bs-btn-active-color: #212529;
+    --bs-btn-active-bg: #dae0e5;
+    --bs-btn-active-border-color: #d3d9df;
+    --bs-btn-disabled-color: #212529;
+    --bs-btn-disabled-bg: #f8f9fa;
+    --bs-btn-disabled-border-color: #f8f9fa;
+}
+
+.btn-dark {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #343a40;
+    --bs-btn-border-color: #343a40;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #23272b;
+    --bs-btn-hover-border-color: #1d2124;
+    --bs-btn-focus-shadow-rgb: 82, 88, 93;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #1d2124;
+    --bs-btn-active-border-color: #171a1d;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #343a40;
+    --bs-btn-disabled-border-color: #343a40;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.btn-block + .btn-block {
+    margin-top: 0.5rem;
+}
+
+/* ---------------------------------------------------------------- alerts */
+
+.alert {
+    --bs-alert-padding-x: 1.25rem;
+    --bs-alert-padding-y: 0.75rem;
+}
+
+.alert-primary {
+    --bs-alert-color: #004085;
+    --bs-alert-bg: #cce5ff;
+    --bs-alert-border-color: #b8daff;
+    --bs-alert-link-color: #002752;
+}
+
+.alert-secondary {
+    --bs-alert-color: #383d41;
+    --bs-alert-bg: #e2e3e5;
+    --bs-alert-border-color: #d6d8db;
+    --bs-alert-link-color: #202326;
+}
+
+.alert-success {
+    --bs-alert-color: #155724;
+    --bs-alert-bg: #d4edda;
+    --bs-alert-border-color: #c3e6cb;
+    --bs-alert-link-color: #0b2e13;
+}
+
+.alert-info {
+    --bs-alert-color: #0c5460;
+    --bs-alert-bg: #d1ecf1;
+    --bs-alert-border-color: #bee5eb;
+    --bs-alert-link-color: #062c33;
+}
+
+.alert-warning {
+    --bs-alert-color: #856404;
+    --bs-alert-bg: #fff3cd;
+    --bs-alert-border-color: #ffeeba;
+    --bs-alert-link-color: #533f03;
+}
+
+.alert-danger {
+    --bs-alert-color: #721c24;
+    --bs-alert-bg: #f8d7da;
+    --bs-alert-border-color: #f5c6cb;
+    --bs-alert-link-color: #491217;
+}
+
+.alert-light {
+    --bs-alert-color: #818182;
+    --bs-alert-bg: #fefefe;
+    --bs-alert-border-color: #fdfdfe;
+    --bs-alert-link-color: #686868;
+}
+
+.alert-dark {
+    --bs-alert-color: #1b1e21;
+    --bs-alert-bg: #d6d8d9;
+    --bs-alert-border-color: #c6c8ca;
+    --bs-alert-link-color: #040505;
+}
+
+/* ---------------------------------------------------------------- form controls (custom-select -> form-select) */
+
+.form-control,
+.form-select {
+    color: #495057;
+    border-color: #ced4da;
+}
+
+.form-control::placeholder {
+    color: #6c757d;
+}
+
+.form-control:focus,
+.form-select:focus {
+    color: #495057;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Bootstrap 4 custom-select: double arrow, 8x10 */
+.form-select {
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e");
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    background-size: 8px 10px;
+    vertical-align: middle;
+}
+
+/* compatibility alias for code ported with Bootstrap 4 class names */
+.custom-select {
+    display: inline-block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    vertical-align: middle;
+    background: #fff
+        url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")
+        no-repeat right 0.75rem center/8px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    appearance: none;
+}
+
+.custom-select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* ---------------------------------------------------------------- tables */
+
+.table {
+    --bs-table-color: #212529;
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.75rem;
+    border-top-width: 1px;
+    border-bottom-width: 0;
+}
+
+.table > thead > tr > th {
+    vertical-align: bottom;
+    border-bottom-width: 2px;
+}
+
+.table-sm > :not(caption) > * > * {
+    padding: 0.3rem;
+}
+
+.table .thead-dark > tr > th,
+.table-dark {
+    --bs-table-color: #fff;
+    --bs-table-bg: #343a40;
+    --bs-table-border-color: #454d55;
+    border-color: #454d55;
+}
+
+.table .thead-light > tr > th {
+    --bs-table-color: #495057;
+    --bs-table-bg: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* ---------------------------------------------------------------- nav tabs, progress */
+
+.nav-tabs {
+    --bs-nav-tabs-link-active-color: #495057;
+}
+
+/* Bootstrap 4.3.1 has no focus ring of its own on nav links: keyboard focus shows the browser's outline */
+.nav-link:focus-visible {
+    outline: revert;
+    box-shadow: none;
+}
+
+.progress,
+.progress-stacked {
+    --bs-progress-bar-bg: #007bff;
+}
+
+/* ---------------------------------------------------------------- Bootstrap 4 utility names used by qvis code */
+
+.font-weight-bold {
+    font-weight: 700 !important;
+}
+.font-weight-bolder {
+    font-weight: bolder !important;
+}
+.font-weight-normal {
+    font-weight: 400 !important;
+}
+.font-weight-light {
+    font-weight: 300 !important;
+}
+.text-left {
+    text-align: left !important;
+}
+.text-right {
+    text-align: right !important;
+}
+.float-left {
+    float: left !important;
+}
+.float-right {
+    float: right !important;
+}
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.ml-0 {
+    margin-left: 0 !important;
+}
+.ml-1 {
+    margin-left: 0.25rem !important;
+}
+.ml-2 {
+    margin-left: 0.5rem !important;
+}
+.ml-3 {
+    margin-left: 1rem !important;
+}
+.ml-4 {
+    margin-left: 1.5rem !important;
+}
+.ml-5 {
+    margin-left: 3rem !important;
+}
+.ml-auto {
+    margin-left: auto !important;
+}
+.mr-0 {
+    margin-right: 0 !important;
+}
+.mr-1 {
+    margin-right: 0.25rem !important;
+}
+.mr-2 {
+    margin-right: 0.5rem !important;
+}
+.mr-3 {
+    margin-right: 1rem !important;
+}
+.mr-4 {
+    margin-right: 1.5rem !important;
+}
+.mr-5 {
+    margin-right: 3rem !important;
+}
+.mr-auto {
+    margin-right: auto !important;
+}
+.pl-0 {
+    padding-left: 0 !important;
+}
+.pl-1 {
+    padding-left: 0.25rem !important;
+}
+.pl-2 {
+    padding-left: 0.5rem !important;
+}
+.pl-3 {
+    padding-left: 1rem !important;
+}
+.pl-4 {
+    padding-left: 1.5rem !important;
+}
+.pl-5 {
+    padding-left: 3rem !important;
+}
+.pr-0 {
+    padding-right: 0 !important;
+}
+.pr-1 {
+    padding-right: 0.25rem !important;
+}
+.pr-2 {
+    padding-right: 0.5rem !important;
+}
+.pr-3 {
+    padding-right: 1rem !important;
+}
+.pr-4 {
+    padding-right: 1.5rem !important;
+}
+.pr-5 {
+    padding-right: 3rem !important;
+}

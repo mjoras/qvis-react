@@ -1,0 +1,38 @@
+/* Sequence diagram styles (qvis SequenceDiagramRenderer.vue:25-29, unscoped in qvis). */
+
+#sequence-diagram-svg text.timestamp {
+    font-size: 11px;
+}
+
+/*
+ * "Event detail" modal: bootstrap-vue (Bootstrap 4) header close button "×" and header alignment.
+ * Bootstrap 5 replaced .close by .btn-close (an icon); keep the Bootstrap 4 look.
+ */
+#event-modal .modal-header {
+    align-items: flex-start;
+}
+
+#event-modal .modal-header .close {
+    float: right;
+    padding: 1rem 1rem;
+    margin: -1rem -1rem -1rem auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.5;
+    background-color: transparent;
+    border: 0;
+    appearance: none;
+}
+
+#event-modal .modal-header .close:hover,
+#event-modal .modal-header .close:focus {
+    opacity: 0.75;
+}
+
+#event-modal hr {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    opacity: 1;
+}

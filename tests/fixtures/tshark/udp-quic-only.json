@@ -1,0 +1,70 @@
+[
+  {
+    "_index": "packets-2023-11-14",
+    "_type": "doc",
+    "_score": null,
+    "_source": {
+      "layers": {
+        "frame": {
+          "frame.time": "Nov 14, 2023 22:13:20.001000000 UTC",
+          "frame.time_epoch": "1700000000.001000000",
+          "frame.number": "1",
+          "frame.protocols": "eth:ethertype:ip:udp:quic"
+        },
+        "ip": {
+          "ip.version": "4",
+          "ip.src": "10.0.0.1",
+          "ip.addr": [
+            "10.0.0.1",
+            "93.184.216.34"
+          ],
+          "ip.dst": "93.184.216.34"
+        },
+        "udp": {
+          "udp.srcport": "50000",
+          "udp.dstport": "443",
+          "udp.length": "1208"
+        },
+        "quic": {
+          "quic.header_form": "1",
+          "quic.long.packet_type": "0",
+          "quic.packet_length": "1200"
+        }
+      }
+    }
+  },
+  {
+    "_index": "packets-2023-11-14",
+    "_type": "doc",
+    "_score": null,
+    "_source": {
+      "layers": {
+        "frame": {
+          "frame.time": "Nov 14, 2023 22:13:20.021000000 UTC",
+          "frame.time_epoch": "1700000000.021000000",
+          "frame.number": "2",
+          "frame.protocols": "eth:ethertype:ip:udp:quic"
+        },
+        "ip": {
+          "ip.version": "4",
+          "ip.src": "93.184.216.34",
+          "ip.addr": [
+            "93.184.216.34",
+            "10.0.0.1"
+          ],
+          "ip.dst": "10.0.0.1"
+        },
+        "udp": {
+          "udp.srcport": "443",
+          "udp.dstport": "50000",
+          "udp.length": "1208"
+        },
+        "quic": {
+          "quic.header_form": "1",
+          "quic.long.packet_type": "0",
+          "quic.packet_length": "1200"
+        }
+      }
+    }
+  }
+]

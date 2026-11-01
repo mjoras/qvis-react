@@ -1,0 +1,14 @@
+[
+  {
+    "file": "massive_server.sqlog",
+    "title": "Massive trace: 50 MB download",
+    "description": "A 50 MB HTTP/3 download over a 20 ms RTT path with a 100 Mbit/s bottleneck and no random loss (packets are only lost when the bottleneck buffer overflows), for performance testing. This is the server trace.",
+    "size": 29597197,
+    "id": "massive",
+    "traces": 1,
+    "events": 145657,
+    "duration_ms": 4187,
+    "scenario": "qloggen -n 1 -size 50MB -rtt 20ms -bw 100Mbit",
+    "generator": "tools/qloggen: quic-go v0.64.1 + quic-go-v0.64.1-qlog-latest.patch (qlog main-schema-14, quic-events-13, h3-events-13)"
+  }
+]

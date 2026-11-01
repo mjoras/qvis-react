@@ -1,0 +1,169 @@
+/*
+ * Statistics page (parity/statistics.md §2.9, §8.3). qvis rendered bootstrap-vue 2.0.4 b-table-simple / b-progress
+ * with Bootstrap 4.3.1. Bootstrap 5 styles `.table` cells through `.table > :not(caption) > * > *` (CSS variables,
+ * inset box-shadow variants, other paddings) and clips `.progress-bar` labels, so this page uses its own class names
+ * carrying the Bootstrap 4.3.1 values instead of `.table` / `.progress`.
+ */
+
+/* ---------------------------------------------------------------- configurator (StatisticsConfigurator.vue) */
+
+.stats-configurator {
+    background-color: #fff3cd;
+    padding: 0px 10px;
+}
+
+/* scoped `.row { padding-bottom: 10px; }` of StatisticsConfigurator.vue (its own rows only) */
+.stats-configurator > .container-fluid > .row {
+    padding-bottom: 10px;
+}
+
+/*
+ * Bootstrap 5 gives every direct child of a .row width:100%, gutter padding and flex-shrink:0 (Bootstrap 4 only
+ * styled .col*): the intro <p> must keep its natural width to stay centered (ARCHITECTURE §4).
+ */
+.stats-configurator > .container-fluid > .row > :not([class*="col"]) {
+    width: auto;
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+    flex-shrink: 1;
+}
+
+/* ---------------------------------------------------------------- renderer (StatisticsRenderer.vue) */
+
+#statistics-container {
+    width: 100%;
+    border: 5px solid #fff3cd;
+    min-height: 200px;
+}
+
+#statistics-container .stats-inner {
+    width: 50%;
+    min-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#statistics-container h3 {
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+#statistics-container p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+/*
+ * b-table-simple ... responsive: bootstrap-vue 2 moves the table's 1rem bottom margin onto the wrapper, and
+ * Bootstrap 4 drops the outer border of a bordered table inside .table-responsive (the cells keep theirs).
+ */
+#statistics-container .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+
+#statistics-container .table-responsive > .stats-table {
+    margin-bottom: 0;
+}
+
+#statistics-container .table-responsive > .stats-table-bordered {
+    border: 0;
+}
+
+/* .table + .b-table-fixed */
+.stats-table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+    background-color: transparent;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.stats-table th,
+.stats-table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.stats-table th {
+    text-align: inherit;
+    font-weight: bold;
+}
+
+.stats-table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.stats-table-sm th,
+.stats-table-sm td {
+    padding: 0.3rem;
+}
+
+.stats-table-bordered,
+.stats-table-bordered th,
+.stats-table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.stats-table-bordered thead th,
+.stats-table-bordered thead td {
+    border-bottom-width: 2px;
+}
+
+/* after .stats-table-bordered: same specificity, so nested borderless tables win (Bootstrap 4 source order) */
+.stats-table-borderless th,
+.stats-table-borderless td,
+.stats-table-borderless thead th,
+.stats-table-borderless tbody + tbody {
+    border: 0;
+}
+
+/* thead head-variant="dark" */
+.stats-table .stats-thead-dark th {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #454d55;
+}
+
+/* b-td variant="danger" (.table-danger: background only, text colour unchanged) */
+.stats-table td.stats-danger {
+    background-color: #f5c6cb;
+}
+
+/* ---------------------------------------------------------------- b-progress (Bootstrap 4.3.1 .progress) */
+
+.stats-progress {
+    display: flex;
+    height: 1rem;
+    overflow: hidden;
+    font-size: 0.75rem;
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+}
+
+.stats-progress-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #007bff;
+    transition: width 0.6s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stats-progress-bar {
+        transition: none;
+    }
+}

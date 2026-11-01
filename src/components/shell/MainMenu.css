@@ -1,0 +1,77 @@
+/* qvis views/MainMenu.vue scoped styles, exact values (parity/app-shell.md §2.4). */
+
+#MainMenu {
+    width: 100%;
+    background-color: black;
+    color: white;
+    padding-top: 5px;
+}
+
+#MainMenu .nav-tabs {
+    border-bottom: none;
+}
+
+/* Bootstrap 4.3.1 pulls the tab items 1px down (`.nav-tabs .nav-item`); Bootstrap 5 does it on the links instead */
+#MainMenu .nav-tabs .nav-item {
+    margin-left: 3px;
+    margin-bottom: -1px;
+}
+
+#MainMenu .nav-tabs .nav-link {
+    background-color: lightgrey;
+    color: black;
+    border-bottom: none;
+    margin-bottom: 0;
+    /* Bootstrap 5 fades nav-link colours (.15s); Bootstrap 4.3.1 had no transition, so qvis switches tabs instantly */
+    transition: none;
+}
+
+/*
+ * Hover/focus/active border colours come from Bootstrap's own `.nav-tabs .nav-link:hover` / `.active` rules, whose
+ * Bootstrap 5 defaults equal Bootstrap 4.3.1 (#e9ecef #e9ecef #dee2e6, #dee2e6 #dee2e6 #fff). They must stay less
+ * specific than the rules above and below, as in qvis: `border-bottom: none` then gives the hovered tab a
+ * currentColor bottom border and the active tab its own colour (both 0px wide).
+ */
+
+/* qvis: "using the bootstrapvue built-in active-class doesn't work due to precedence weirdness" */
+#MainMenu li.files-link a.active {
+    color: black;
+    font-weight: bold;
+    background-color: #fff;
+    border-bottom-color: #fff;
+}
+
+#MainMenu li.sequence-link a.active {
+    color: black;
+    font-weight: bold;
+    background-color: #cce5ff;
+    border-bottom-color: #cce5ff;
+}
+
+#MainMenu li.congestion-link a.active {
+    color: black;
+    font-weight: bold;
+    background-color: #d4edda;
+    border-bottom-color: #d4edda;
+}
+
+#MainMenu li.multiplexing-link a.active {
+    color: black;
+    font-weight: bold;
+    background-color: #d1ecf1;
+    border-bottom-color: #d1ecf1;
+}
+
+#MainMenu li.packetization-link a.active {
+    color: black;
+    font-weight: bold;
+    background-color: #f8d7da;
+    border-bottom-color: #f8d7da;
+}
+
+#MainMenu li.stats-link a.active {
+    color: black;
+    font-weight: bold;
+    background-color: #fff3cd;
+    border-bottom-color: #fff3cd;
+}

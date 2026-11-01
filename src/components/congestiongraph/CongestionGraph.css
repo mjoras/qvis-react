@@ -1,0 +1,52 @@
+/*
+ * Congestion graph styles (parity/congestion-graph.md §2.2, §2.3, §8.5).
+ * qvis had the graph rules unscoped (CongestionGraphRenderer.vue) and the configurator rules scoped; both are scoped
+ * here so `.grid` cannot leak into other views.
+ */
+
+/* ---------------------------------------------------------------- graph (CongestionGraphRenderer.vue) */
+
+#congestion-graph .grid line {
+    stroke: #ddd;
+}
+
+#congestion-graph .nogrid line {
+    stroke: #ffffff;
+}
+
+#congestion-graph .hiddenLegend {
+    opacity: 0.3;
+}
+
+/* ---------------------------------------------------------------- configurator (CongestionGraphConfigurator.vue) */
+
+/* Vue scoped `.row`: only the configurator's own three rows, not the rows inside the shared ConnectionConfigurator
+   (a scoped rule never reached a child component's inner elements; leaking it made the panel 20px taller) */
+.cg-configurator > .container-fluid > .row {
+    padding-bottom: 10px;
+}
+
+.cg-configurator .btn {
+    margin: 0px 5px;
+}
+
+/* Bootstrap 4.3.1 button focus look (ring after a mouse click, normal colours): app-wide in src/styles/global.css */
+
+/*
+ * Bootstrap 5 gives every direct child of a .row `width: 100%`, gutter padding and `flex-shrink: 0` (Bootstrap 4 only
+ * styled .col*). qvis puts the intro <p> and the buttons directly in `b-row align-h="center"`; restore the Bootstrap 4
+ * flex-item behaviour for them (ARCHITECTURE §4).
+ */
+.cg-configurator .row > p,
+.cg-configurator .row > .btn {
+    width: auto;
+    max-width: none;
+    flex-shrink: 1;
+}
+
+.cg-configurator .row > p {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Button tooltips (HoverTooltipButton): Bootstrap 4.3.1 look in src/styles/global.css (`.qvis-tooltip`) */

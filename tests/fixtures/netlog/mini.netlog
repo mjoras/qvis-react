@@ -1,0 +1,41 @@
+{
+  "constants": {
+    "activeFieldTrialGroups": [],
+    "logEventPhase": {"PHASE_BEGIN": 1, "PHASE_END": 2, "PHASE_NONE": 0},
+    "logSourceType": {"NONE": 0, "URL_REQUEST": 1, "QUIC_SESSION": 11},
+    "logEventTypes": {
+      "URL_REQUEST_START_JOB": 2, "QUIC_SESSION": 234,
+      "QUIC_SESSION_TRANSPORT_PARAMETERS_SENT": 300, "QUIC_SESSION_CRYPTO_FRAME_SENT": 301,
+      "QUIC_SESSION_PADDING_FRAME_SENT": 302, "QUIC_SESSION_PACKET_SENT": 303,
+      "HTTP3_LOCAL_CONTROL_STREAM_CREATED": 304, "HTTP3_SETTINGS_SENT": 305, "HTTP3_HEADERS_SENT": 306,
+      "QUIC_SESSION_PACKET_RECEIVED": 307, "QUIC_SESSION_UNAUTHENTICATED_PACKET_HEADER_RECEIVED": 308,
+      "QUIC_SESSION_ACK_FRAME_RECEIVED": 309, "QUIC_SESSION_CRYPTO_FRAME_RECEIVED": 310,
+      "QUIC_SESSION_STREAM_FRAME_RECEIVED": 311, "HTTP3_HEADERS_DECODED": 312,
+      "HTTP3_DATA_FRAME_RECEIVED": 313, "CERT_VERIFIER_REQUEST": 314, "QUIC_SESSION_PACKET_LOST": 315
+    },
+    "timeTickOffset": "1600000000000"
+  },
+  "events": [
+    {"phase":1,"source":{"id":7,"start_time":"5000","type":11},"time":"5000","type":234,"params":{"host":"example.org","port":443,"connection_id":"0102030405060708","versions":"RFCv1"}},
+    {"phase":0,"source":{"id":3,"start_time":"4990","type":1},"time":"5000","type":2},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5001","type":300,"params":{"quic_transport_parameters":"[Client max_idle_timeout 30000 max_udp_payload_size 1472 initial_max_data 15728640 initial_max_stream_data_bidi_local 6291456 initial_max_streams_bidi 100 initial_source_connection_id 0a0b0c0d]"}},
+    {"phase":1,"source":{"id":7,"start_time":"5000","type":11},"time":"5001","type":314},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5002","type":301,"params":{"encryption_level":"ENCRYPTION_INITIAL","data_length":290,"offset":0}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5002","type":302,"params":{"num_padding_bytes":905}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5002","type":303,"params":{"encryption_level":"ENCRYPTION_INITIAL","packet_number":1,"size":1250,"transmission_type":"NOT_RETRANSMISSION","sent_time_us":"5002000"}},
+    {"phase":2,"source":{"id":7,"start_time":"5000","type":11},"time":"5003","type":314},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5004","type":304,"params":{"stream_id":2}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5004","type":305,"params":{"SETTINGS_MAX_FIELD_SECTION_SIZE":262144,"SETTINGS_QPACK_MAX_TABLE_CAPACITY":0,"SETTINGS_QPACK_BLOCKED_STREAMS":0}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5004","type":306,"params":{"stream_id":0,"headers":[":method: GET",":authority: example.org",":path: /",":scheme: https"]}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5030","type":307,"params":{"peer_address":"192.0.2.1:443","self_address":"10.0.0.1:50000","size":1200}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5030","type":308,"params":{"connection_id":"0102030405060708","header_format":"IETF_QUIC_LONG_HEADER_PACKET","long_header_type":"INITIAL","packet_number":1}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5030","type":309,"params":{"largest_observed":1,"smallest_observed":1,"missing_packets":[],"delta_time_largest_observed_us":250,"received_packet_times":[]}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5030","type":310,"params":{"encryption_level":"ENCRYPTION_INITIAL","data_length":90,"offset":0}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5045","type":307,"params":{"peer_address":"192.0.2.1:443","self_address":"10.0.0.1:50000","size":400}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5045","type":308,"params":{"connection_id":"0102030405060708","header_format":"IETF_QUIC_SHORT_HEADER_PACKET","packet_number":5}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5045","type":311,"params":{"stream_id":0,"fin":true,"offset":0,"length":300}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5046","type":312,"params":{"stream_id":0,"headers":[":status: 200","content-type: text/html"]}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5046","type":313,"params":{"stream_id":0,"payload_length":250}},
+    {"phase":0,"source":{"id":7,"start_time":"5000","type":11},"time":"5100","type":315,"params":{"packet_number":1,"transmission_type":"NOT_RETRANSMISSION","detection_time_us":"5100000"}}
+  ]
+}
