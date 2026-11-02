@@ -1,0 +1,107 @@
+# The repository's checks (lint, typecheck, unit tests, build), plus the "Running locally" instructions of README.md on
+# Linux, macOS and Windows (clean `npm ci`, the build, the local server's tests, a smoke test of the built server, the
+# literal README commands in PowerShell) and the optional Docker image.
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    checks:
+        name: lint, typecheck, unit tests, build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
+              with:
+                  node-version-file: .nvmrc
+                  cache: npm
+            - run: npm ci
+            - run: npm run lint
+            - run: npm run typecheck
+            - run: npm test
+            - run: npm run build
+
+    npm:
+        name: npm start (${{ matrix.os }}, Node ${{ matrix.node }})
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, macos-latest, windows-latest]
+                node: ["22", "24", "26"]
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: ${{ matrix.node }}
+                  cache: npm
+            - run: npm ci
+            - run: npm run build
+            - run: npx vitest run server
+            - run: node scripts/smoke-local-server.mjs
+            # the README's commands, typed as a Windows user would: `npm start -- --port <n>` in Windows PowerShell 5.1
+            # and in PowerShell 7 (npm.ps1 must keep the `--`), and the shell-independent `node ...` form
+            - name: README commands in Windows PowerShell
+              if: runner.os == 'Windows'
+              shell: powershell
+              run: |
+                  $job = Start-Job { Set-Location $using:PWD; npm start -- --port 9123 *>&1 }
+                  $ok = $false
+                  for ($i = 0; $i -lt 120 -and -not $ok; $i++) {
+                      try { Invoke-WebRequest -UseBasicParsing http://127.0.0.1:9123/ | Out-Null; $ok = $true } catch { Start-Sleep 1 }
+                  }
+                  Receive-Job $job; Stop-Job $job
+                  Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" | Where-Object { $_.CommandLine -like '*local-server*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+                  if (-not $ok) { throw "npm start -- --port 9123 did not serve http://127.0.0.1:9123/" }
+            - name: README commands in PowerShell 7
+              if: runner.os == 'Windows'
+              shell: pwsh
+              run: |
+                  $job = Start-Job { Set-Location $using:PWD; npm start -- --port 9124 *>&1 }
+                  $ok = $false
+                  for ($i = 0; $i -lt 120 -and -not $ok; $i++) {
+                      try { Invoke-WebRequest http://127.0.0.1:9124/ | Out-Null; $ok = $true } catch { Start-Sleep 1 }
+                  }
+                  Receive-Job $job; Stop-Job $job
+                  Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" | Where-Object { $_.CommandLine -like '*local-server*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+                  if (-not $ok) { throw "npm start -- --port 9124 did not serve http://127.0.0.1:9124/" }
+                  $p = Start-Process node -ArgumentList 'dist-server/server/local-server.js','--port','9125' -PassThru -NoNewWindow
+                  $ok = $false
+                  for ($i = 0; $i -lt 30 -and -not $ok; $i++) {
+                      try { Invoke-WebRequest http://127.0.0.1:9125/ | Out-Null; $ok = $true } catch { Start-Sleep 1 }
+                  }
+                  Stop-Process -Id $p.Id -Force
+                  if (-not $ok) { throw "node dist-server/server/local-server.js --port 9125 did not serve" }
+
+    docker:
+        name: docker build + run
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
+              with:
+                  node-version-file: .nvmrc
+            - run: docker build -t qvis-react .
+            - run: docker run -d --name qvis -p 127.0.0.1:8080:8080 qvis-react
+            - name: wait for the server
+              run: |
+                  for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8080/ && exit 0; sleep 1; done
+                  docker logs qvis; exit 1
+            - run: node scripts/smoke-local-server.mjs --url http://127.0.0.1:8080
+            - name: options after the image name reach the server
+              run: |
+                  docker run -d --name qvis2 -p 127.0.0.1:8081:8080 qvis-react --allowed-hosts qvis.test
+                  for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8081/ && break; sleep 1; done
+                  test "$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: qvis.test:8081' http://127.0.0.1:8081/)" = 200
+                  docker rm -f qvis2
+            - name: stops on SIGTERM
+              run: |
+                  start=$(date +%s); docker stop qvis; end=$(date +%s)
+                  test $((end - start)) -lt 5 || { echo "docker stop took $((end - start)) s (SIGTERM ignored?)"; exit 1; }

@@ -108,6 +108,9 @@ qvis on the same inputs.
   rebinding; dev/preview rely on Vite's `allowedHosts`) and the opt-in `--allow-private` (this computer and private
   networks as targets; loopback bind only; same-origin fetches only; link-local and metadata addresses stay blocked).
   The e2e suite sets `QVIS_PROXY_ALLOW_HOSTS=e2e.invalid` for the dev server, so its proxy fetches nothing.
+  Production does not need the X-Forwarded-* stripping: on https://qvis-react.vercel.app (2026-11-01) a request with
+  `Origin: https://evil.example` plus a forged `X-Forwarded-Host: evil.example` and no Fetch Metadata still gets 403,
+  because Vercel's edge sets X-Forwarded-Host itself.
 - Not verified on real hardware: Windows (covered by the CI GitHub Actions workflow on windows-latest,
   including the README commands in Windows PowerShell 5.1 and PowerShell 7), the Docker image (built and smoke-tested
   only in that workflow, Linux amd64; Docker Desktop and arm64 untested).
