@@ -6,3 +6,4 @@ tools/qloggen/.build
 test-results
 playwright-report
 *.png
+dist-server

@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.server.tsbuildinfo",
+        "target": "ES2023",
+        "lib": ["ES2023"],
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "types": ["node"],
+        "strict": true,
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
+        "erasableSyntaxOnly": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "rewriteRelativeImportExtensions": true,
+        "rootDir": "..",
+        "outDir": "../dist-server"
+    },
+    "include": ["./*.ts"],
+    "exclude": ["./*.test.ts", "./vite-plugin.ts"]
+}

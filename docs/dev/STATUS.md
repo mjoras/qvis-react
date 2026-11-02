@@ -100,8 +100,20 @@ qvis on the same inputs.
 - Invisible DOM differences in the shared `ConnectionConfigurator`: Bootstrap 5 `.col` divs are `position: static`
   (4.3.1: `relative`), the select is `display: block` (4.3.1 `custom-select`: `inline-block`) and its margins collapse
   through the wrapper divs. Every visible box is identical (pixel diffs 0), so this was left alone.
-- The Vite dev server serves `/api/loadfiles` as a transformed module (no Vercel Function), so the proxy fallback
-  fails there with "the qvis CORS proxy is not available"; `npx vercel dev` runs the real function.
+- The proxy also runs outside Vercel: in `npm run dev` / `npm run preview` (Vite plugin `server/vite-plugin.ts`) and
+  in the local server (`npm start`, `server/local-server.ts`), which also applies the `vercel.json` headers. Both use
+  the unchanged `api/loadfiles.ts`, so its SSRF guard and caller policy hold locally too. Both local modes drop forged
+  `X-Forwarded-*` headers (they are their own edge) and also refuse this machine's own addresses and known cloud
+  metadata endpoints as proxy targets (`server/policy.ts`). The local server adds a Host-header allowlist (DNS
+  rebinding; dev/preview rely on Vite's `allowedHosts`) and the opt-in `--allow-private` (this computer and private
+  networks as targets; loopback bind only; same-origin fetches only; link-local and metadata addresses stay blocked).
+  The e2e suite sets `QVIS_PROXY_ALLOW_HOSTS=e2e.invalid` for the dev server, so its proxy fetches nothing.
+- Not verified on real hardware: Windows (covered by the CI GitHub Actions workflow on windows-latest,
+  including the README commands in Windows PowerShell 5.1 and PowerShell 7), the Docker image (built and smoke-tested
+  only in that workflow, Linux amd64; Docker Desktop and arm64 untested).
+- Known: a client that disconnects before the upstream answers does not cancel the upstream request (the handler in
+  `api/loadfiles.ts` does not observe `request.signal`; it stops at its 60 s timeout). Left as is to keep the
+  production function unchanged.
 
 ## Sequence diagram (`#/sequence`)
 

@@ -1,0 +1,8 @@
+# LF everywhere, also in Windows checkouts (core.autocrlf=true): qlog demo files keep the byte sizes recorded in
+# public/examples/**/index.json, and fixtures stay byte-identical to what the tests expect.
+* text=auto eol=lf
+public/examples/** -text
+tests/fixtures/** -text
+*.gz binary
+*.ico binary
+*.png binary

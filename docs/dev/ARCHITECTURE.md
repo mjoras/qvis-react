@@ -82,6 +82,16 @@ src/
   views/                          thin route wrappers (FileManagerView, SequenceView, ...)
   test/setup.ts
 api/loadfiles.ts                  Vercel Function: CORS proxy with SSRF guard
+server/                           running outside Vercel (README "Running locally"), Node built-ins only:
+                                  local-server.ts (`npm start` / `npm run serve`: dist/ + the proxy + vercel.json headers,
+                                  127.0.0.1 and ::1 by default; Vercel order: function path, files, then rewrites),
+                                  policy.ts (Host allowlist, address policy: own addresses, metadata endpoints,
+                                  --allow-private table), node-adapter.ts (node:http <-> Web Request/Response, drops
+                                  X-Forwarded-*), static-files.ts (traversal-safe, exact-spelling file lookup),
+                                  vercel-rules.ts (vercel.json headers/rewrites), vite-plugin.ts (the proxy in `vite`
+                                  dev/preview, with policy.ts's default address policy). `npm run build` compiles it with
+                                  api/loadfiles.ts into dist-server/ (`tsc -b`) and marks that ESM
+                                  (scripts/dist-server-package.mjs). api/loadfiles.ts itself is unchanged.
 public/examples/                  demo qlogs (latest drafts): index.json (Option 3) + massive/index.json (Option 4), each an
                                   array of {file, title?, description?, size? (bytes)}, file relative to the manifest folder;
                                   tcp/wikipedia_Playstation.json = qvis's tshark TCP demo input (MIT, see tcp/README.md;
@@ -89,7 +99,9 @@ public/examples/                  demo qlogs (latest drafts): index.json (Option
 tests/fixtures/                   latest/ (valid), nonconforming/ (pre-final quic-go output), legacy/ (draft-02 for old qvis)
 tests/e2e/                        Playwright: smoke.spec.ts (shell/loading), one spec per tool and the converters, and
                                   all-views.spec.ts (Option 3 + Option 4 demos through every view); config at the repo root
-scripts/                          validate-qlog.mjs (CDDL), sqlog-to-qlog.mjs, latest-to-legacy.mjs
+scripts/                          validate-qlog.mjs (CDDL), sqlog-to-qlog.mjs, latest-to-legacy.mjs,
+                                  smoke-local-server.mjs (CI: .github/workflows/ci.yml, Linux/macOS/Windows),
+                                  dist-server-package.mjs (marks dist-server/ as ESM during `npm run build`)
 tools/qloggen/                    patched quic-go generator harness (Go)
 ```
 

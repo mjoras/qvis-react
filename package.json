@@ -6,12 +6,14 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && node scripts/dist-server-package.mjs && vite build",
     "preview": "vite preview",
+    "start": "npm run build && node dist-server/server/local-server.js",
+    "serve": "node dist-server/server/local-server.js",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",
     "test": "vitest run",

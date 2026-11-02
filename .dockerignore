@@ -1,0 +1,14 @@
+.git
+node_modules
+dist
+dist-server
+.vercel
+coverage
+playwright-report
+test-results
+tests/fixtures/legacy
+tools/qloggen/quic-go
+tools/qloggen/.build
+public/examples/massive/massive_client.sqlog
+*.log
+.env*

@@ -57,8 +57,9 @@ The same URL shapes as qvis work:
 - Multiplexing graph: `multimultiplexing` shows "Load all connections at once"
 
 The browser fetches the URL directly. If that fails (for example because the server sends no CORS headers), it
-retries through the deployment's own proxy, `/api/loadfiles?file=<url>`, a Vercel Function. The proxy only fetches
-public `http(s)` URLs and limits the response size.
+retries through the deployment's own proxy, `/api/loadfiles?file=<url>`: a Vercel Function on Vercel, the same code in
+the local server (see [Running locally](#running-locally)). The proxy only fetches public `http(s)` URLs and limits
+the response size.
 
 Limits that qvis did not have (security review): one `?list=` or `?file1..N=` link loads at most 100 files, at most 6
 at a time, and a compressed file may inflate to at most 512 MiB in the browser.
@@ -74,18 +75,112 @@ validator (`node scripts/validate-qlog.mjs <file>`).
 `scripts/latest-to-legacy.mjs` converts latest-draft files to draft-02, which the original qvis renders. We use it to
 compare both tools on the same connection.
 
+## Running locally
+
+You may not need to: qvis-react runs in the browser, so files you open with "Upload" or drag and drop are read on
+your computer and never uploaded, on the hosted version as well. Run your own copy to work offline, to pin a
+version, to load files from your own machine or network by URL, or to avoid depending on a hosted site.
+
+You need [Node.js](https://nodejs.org/) 24 or 26 (the LTS releases; 22.22 or later also works) and git. The same
+commands work in a terminal on Linux and macOS and in PowerShell or Command Prompt on Windows:
+
+```sh
+git clone https://github.com/mjoras/qvis-react.git
+cd qvis-react
+npm ci
+npm start
+```
+
+Then open <http://localhost:8080/>. Stop the server with Ctrl+C.
+
+`npm start` builds the app and starts the local server ([`server/local-server.ts`](server/local-server.ts)), which
+needs nothing besides Node. It serves `dist/` with the same headers as the Vercel deployment (including the
+Content-Security-Policy), and runs the same CORS proxy at `/api/loadfiles` and `/loadfiles`, so `?file=` links behave
+as they do on the hosted version.
+
+| Task                                                         | Command                                                        |
+| ------------------------------------------------------------ | -------------------------------------------------------------- |
+| Use another port                                             | `npm start -- --port 9000`                                     |
+| Serve the existing build without rebuilding                  | `npm run serve`                                                |
+| Load files from this computer or your network by URL (below) | `npm start -- --allow-private`                                 |
+| Let other machines connect                                   | `npm start -- --host 0.0.0.0`                                  |
+| Also answer to a DNS name of this machine                    | `npm start -- --host 0.0.0.0 --allowed-hosts qvis.lab.example` |
+| All options                                                  | `npm start -- --help`                                          |
+
+After a build, `node dist-server/server/local-server.js` takes the same options (`--port 9000`, ...) and works the same
+in every shell. On Windows:
+
+- If PowerShell says "running scripts is disabled on this system", type `npm.cmd` instead of `npm`, or use Command
+  Prompt.
+- The npm of older Node releases, in PowerShell, drops the `--`: options with a value then stop with "Unexpected
+  argument", and `--allow-private` or `--help` are silently ignored (check the `proxy` line the server prints). Use the
+  `node dist-server/server/local-server.js ...` form, or update Node.
+- If port 8080 is refused with `EACCES` (Hyper-V, WSL and Docker Desktop reserve port ranges), use another `--port`.
+
+By default the server listens on 127.0.0.1 and ::1 only, so only your own computer can reach it. It answers only
+requests addressed to an IP address, `localhost` or a name given with `--allowed-hosts` (or `QVIS_ALLOWED_HOSTS`), so a
+web page cannot reach it through DNS rebinding. With `--host 0.0.0.0`, other machines can also use its proxy (for
+public addresses only).
+
+**Loading files from your own machine or network by URL.** The proxy, locally as on Vercel, only fetches public
+internet addresses by default: it refuses `localhost` and private network addresses (and this computer's own
+addresses), so it cannot be used to reach other services on your computer or network. To load qlogs from a file server
+on your computer or LAN, start qvis-react with `--allow-private`, and serve the files on this computer only, for
+example with Python:
+
+```sh
+npm start -- --allow-private
+# in a second terminal (on Windows: py instead of python3)
+python3 -m http.server 8000 --bind 127.0.0.1 --directory ./my-qlogs
+```
+
+Then open `http://localhost:8080/?file=http://localhost:8000/trace.sqlog`. With `--allow-private` the proxy also
+fetches from this computer (127.0.0.0/8, ::1 and its own addresses) and from private networks (10.0.0.0/8,
+172.16.0.0/12, 192.168.0.0/16, 100.64.0.0/10, fc00::/7). It still refuses link-local addresses (169.254.0.0/16,
+fe80::/10) and the cloud metadata services at 100.100.100.200, fd00:ec2::254 and fd20:ce::254. It answers only the qvis
+app itself (browser fetches from the same origin, so open the app as `localhost` or `127.0.0.1`), and only while the
+server listens on this computer alone. Avoid file servers with CORS enabled (`Access-Control-Allow-Origin: *`) for
+private traces: any web site open in your browser could then read them. Or just drag the files onto the page.
+
+**Without network access.** After `npm ci` and the first build, everything works offline. To run qvis-react on a
+machine without network access, build it elsewhere and copy `dist/`, `dist-server/` and `vercel.json`, keeping that
+layout. There, `node dist-server/server/local-server.js` is all you need, without `npm ci`.
+
+**Only a static file server.** `dist/` also works from any static file server, for example
+`python3 -m http.server 8080 --bind 127.0.0.1 --directory dist` (`py` on Windows) or
+`npx serve dist -l tcp://127.0.0.1:3000`. Uploads, drag and drop and the demo files work. Loading a file by URL then
+only works if the server hosting the file sends CORS headers, and the Content-Security-Policy is not sent. Opening
+`dist/index.html` straight from disk (`file://`) does not work: browsers do not run its module script from a `file://`
+page, so it stays blank.
+
+**Docker (optional).** Node is the lighter way to run qvis-react, but if you prefer containers, the
+[`Dockerfile`](Dockerfile) runs the same local server:
+
+```sh
+docker build -t qvis-react .
+docker run --rm -p 127.0.0.1:8080:8080 qvis-react
+```
+
+Then open <http://localhost:8080/>. As with the original qvis image the app is on port 8080, but this image also runs
+the CORS proxy. `-p 127.0.0.1:8080:8080` keeps the port on your own computer; `-p 8080:8080` publishes it to your
+network. Server options go after the image name. For example, to reach the container from other machines by a DNS name
+of this computer: `docker run --rm -p 8080:8080 qvis-react --allowed-hosts qvis.lab.example`. `--allow-private` is not
+available in the container, since it listens on all of the container's interfaces.
+
 ## Development
 
-Requires Node 20 or newer.
+Requires Node 22.22+, 24.15+ or 26 (the test toolchain's requirement; [`.nvmrc`](.nvmrc) names the version CI uses).
 
 ```sh
 npm install
-npm run dev          # http://localhost:5173
+npm run dev          # http://localhost:5173 (also runs the /api/loadfiles proxy)
 npm test             # unit tests (Vitest)
 npm run e2e          # browser smoke tests (Playwright; run `npx playwright install chromium` once)
 npm run typecheck
 npm run lint
-npm run build        # static site in dist/
+npm run build        # static site in dist/, local server in dist-server/
+npm start            # build, then the local server on http://localhost:8080/ (see "Running locally")
+node scripts/smoke-local-server.mjs   # after a build: smoke test of the local server (CI runs it on every OS)
 ```
 
 The design and the parity notes are in [`docs/dev/`](docs/dev/): `ARCHITECTURE.md` describes the code layout, and

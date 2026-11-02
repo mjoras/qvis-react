@@ -35,6 +35,9 @@ export default defineConfig({
     ],
     webServer: {
         command: `npx vite --port ${PORT} --strictPort`,
+        // the dev server runs the real /api/loadfiles proxy (server/vite-plugin.ts), which fetches from Node, outside
+        // Chromium's host-resolver rules: let it fetch nothing, so the suite stays offline
+        env: { QVIS_PROXY_ALLOW_HOSTS: "e2e.invalid" },
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
         timeout: 60_000,
